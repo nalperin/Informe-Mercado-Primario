@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ titulo }} | one618</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6f8; --c:#fff; --tx:#23252b; --m:#6b7280; --n:#312B2B;
+  --bd:#e8eaf0; --b:#663399; --a:#663399; --a2:#A78DD9;
+  --t:#6A4C93; --r:#E91E63;
+  --hero-bg:#312B2B;
+  --sh:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+  --sh2:0 10px 28px rgba(16,24,40,.09),0 2px 6px rgba(16,24,40,.05);
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.hero{background:#312B2B;color:#fff;padding:30px 40px;text-align:center;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#164EC7,#6D30A9,#DB2B8D)}
+.hero .logo{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:#312B2B}
+.hero .logo img{height:100px;display:block;filter:invert(1) grayscale(100%);mix-blend-mode:screen}
+.hero .center{flex:1;text-align:center;min-width:280px}
+.hero h1{font-family:inherit;font-size:2.1rem;font-weight:400;letter-spacing:-.5px;color:#fff}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:5px 18px;border-radius:20px;font-size:.72rem;margin-top:10px;font-weight:500;letter-spacing:.3px;color:#E6DFDF}
+@media(max-width:900px){.hero .logo{position:static;transform:none;margin-left:auto;margin-right:0}}
+
+nav{position:sticky;top:0;z-index:100;background:var(--c);border-bottom:1px solid var(--bd);box-shadow:var(--sh);overflow-x:auto}
+nav .i{display:flex;justify-content:center;padding:8px 28px;gap:0;max-width:1600px;margin:0 auto}
+nav button{flex:1;background:transparent;border:1px solid transparent;padding:12px 20px;font-family:inherit;font-size:.78rem;font-weight:600;color:var(--m);cursor:pointer;letter-spacing:.4px;text-transform:uppercase;border-radius:8px;margin:0 4px;transition:all .2s}
+nav button:hover{color:#8E44AD;background:rgba(142,68,173,.06);border-color:rgba(142,68,173,.15)}
+nav button.active{color:#fff;background:#8E44AD;border-color:#8E44AD;box-shadow:0 2px 6px rgba(142,68,173,.28)}
+
+.fbar{background:var(--c);border-bottom:1px solid var(--bd);padding:14px 28px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;position:relative;max-width:1600px;margin:0 auto}
+.fbar .fg{display:flex;flex-direction:column;gap:3px}
+.fbar .fg label{font-size:.58rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:1px}
+.fbar .fbtn{background:var(--c);color:var(--m);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:.74rem;font-family:inherit;font-weight:600;cursor:pointer;transition:all .2s}
+.fbar .fbtn:hover{background:rgba(102,51,153,.06);color:var(--a);border-color:var(--a2)}
+.fbar .fsep{width:1px;height:30px;background:var(--bd)}
+.fbar .finfo{color:var(--m);font-size:.7rem;font-weight:500;margin-left:auto}
+
+.fsel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 32px 7px 12px;font-size:.76rem;font-family:inherit;min-width:160px;cursor:pointer;outline:none;transition:all .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%2364748b' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 11px center}
+.fsel:hover{border-color:var(--a2)}
+.fsel:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(102,51,153,.1)}
+.msel{position:relative;min-width:160px}
+.msel-btn{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 30px 7px 12px;font-size:.76rem;font-family:inherit;min-width:160px;cursor:pointer;outline:none;transition:all .2s;text-align:left;width:100%}
+.msel-btn::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.65rem;color:var(--m);pointer-events:none}
+.msel-btn:hover{border-color:var(--a2)}
+.msel-btn:focus,.msel.open .msel-btn{border-color:var(--a);box-shadow:0 0 0 3px rgba(102,51,153,.1)}
+.msel-dd{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:280px;overflow-y:auto;background:var(--c);border:1px solid var(--bd);border-radius:8px;box-shadow:var(--sh2);z-index:200;padding:6px 0}
+.msel.open .msel-dd{display:block}
+.msel-dd label{display:flex;align-items:center;gap:8px;padding:6px 14px;font-size:.76rem;cursor:pointer;transition:background .15s;white-space:nowrap;font-weight:500}
+.msel-dd label:hover{background:rgba(102,51,153,.05)}
+.msel-dd label input[type=checkbox]{accent-color:var(--a);width:15px;height:15px;cursor:pointer;border-radius:3px}
+.msel-dd .msel-all{border-bottom:1px solid var(--bd);font-weight:700;color:var(--b);padding-bottom:8px;margin-bottom:2px}
+/* Filtro Emisor — autocompletado de texto */
+.emisor-ac{position:relative;min-width:200px}
+.emisor-input{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 12px;font-size:.76rem;font-family:inherit;width:100%;outline:none;transition:all .2s}
+.emisor-input::placeholder{color:var(--m)}
+.emisor-input:hover{border-color:var(--a2)}
+.emisor-input:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(102,51,153,.1)}
+.emisor-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;min-width:260px;max-height:300px;overflow-y:auto;background:var(--c);border:1px solid var(--bd);border-radius:8px;box-shadow:var(--sh2);z-index:200;padding:4px 0}
+.emisor-ac.open .emisor-list{display:block}
+.emisor-list .item{padding:7px 14px;font-size:.76rem;cursor:pointer;white-space:nowrap;font-weight:500}
+.emisor-list .item:hover{background:rgba(102,51,153,.08)}
+.emisor-list .empty{padding:8px 14px;font-size:.74rem;color:var(--m);font-style:italic}
+
+.ct{max-width:1600px;margin:0 auto;padding:0 28px}
+.sec{display:none;padding:24px 0 36px;animation:fi .35s ease}
+.sec.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.st{font-family:inherit;font-weight:800;font-size:1.5rem;color:var(--n);margin-bottom:2px;letter-spacing:-.3px}
+.ss{color:var(--m);font-size:.82rem;margin-bottom:20px;font-weight:400}
+
+.card{background:var(--c);border:1px solid var(--bd);border-radius:var(--radius);padding:24px;margin-bottom:18px;box-shadow:var(--sh);transition:box-shadow .25s,transform .25s}
+.card:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.card h3{font-size:.74rem;font-weight:700;color:var(--n);margin-bottom:16px;text-transform:uppercase;letter-spacing:.9px}
+.card-hdr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.card-hdr h3{margin-bottom:0}
+.card-sub{font-size:.7rem;color:var(--m);font-weight:400}
+
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--c);border:1px solid var(--bd);border-radius:var(--radius);padding:22px 18px;text-align:center;box-shadow:var(--sh);transition:box-shadow .25s,transform .25s;border-top:3px solid #164EC7}
+.kpi:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.kpi .v{font-family:inherit;font-weight:400;font-size:1.9rem;color:var(--n);letter-spacing:-.4px}
+.kpi .l{font-size:.64rem;color:var(--m);margin-top:7px;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.g2{grid-template-columns:1fr}.hero h1{font-size:1.8rem}}
+
+.cc{position:relative;width:100%;min-height:380px}
+.chart-desc{font-size:.7rem;color:var(--m);margin-top:10px;line-height:1.5;padding-top:8px;border-top:1px solid #f1f5f9;font-weight:400}
+
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:.76rem;border:1px solid var(--bd);border-radius:var(--radius)}
+table thead th{text-align:center;padding:10px;border-bottom:2px solid #663399;color:#663399;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;background:#f5f1f8;position:sticky;top:0}
+table thead th:first-child{border-top-left-radius:var(--radius)}
+table thead th:last-child{border-top-right-radius:var(--radius)}
+table tbody td{padding:8px 10px;border-bottom:1px solid #f1f5f9;text-align:center;font-variant-numeric:tabular-nums}
+table tbody tr:last-child td{border-bottom:none}
+table tbody tr:last-child td:first-child{border-bottom-left-radius:var(--radius)}
+table tbody tr:last-child td:last-child{border-bottom-right-radius:var(--radius)}
+table tbody tr:hover{background:rgba(102,51,153,.06)}
+/* Scroll vertical por fuera del recuadro: el contenedor scrollea, la tabla (con su borde redondeado) queda dentro y la barra a su derecha */
+.tbl-wrap{max-height:660px;overflow:auto}
+
+footer{background:#312B2B;color:rgba(255,255,255,.35);text-align:center;padding:16px;margin-top:40px;font-size:.68rem;letter-spacing:.3px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">
+    {% if logo_b64 %}<img src="data:image/png;base64,{{ logo_b64 }}" alt="one618">{% endif %}
+  </div>
+  <div class="center">
+    <h1>{{ titulo }}</h1>
+    <div><span class="tag">Mercado Primario · {{ fecha_generacion }}</span></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<nav>
+  <div class="i">
+    <button class="active" onclick="show('s0',this)">VISTA GENERAL</button>
+    <button onclick="show('s1',this)">Detalle de emisiones</button>
+  </div>
+</nav>
+
+<div class="fbar" id="filterBar">
+  <div class="fg"><label>Año</label><div class="msel" id="mselYear"><button class="msel-btn" type="button">Todos</button><div class="msel-dd"></div></div></div>
+  <div class="fg"><label>Moneda</label><select class="fsel" id="selMoneda"></select></div>
+  <div class="fg"><label>Legislación</label><select class="fsel" id="selLegislacion"></select></div>
+  <div class="fg"><label>Moneda de Pago</label><select class="fsel" id="selMonedaPago"></select></div>
+  <div class="fg"><label>Estado</label><select class="fsel" id="selEstado"></select></div>
+  <div class="fg"><label>Emisor</label><div class="emisor-ac" id="emisorAC"><input type="text" id="emisorInput" class="emisor-input" placeholder="Escribí un emisor…" autocomplete="off"><div class="emisor-list" id="emisorList"></div></div></div>
+  <div class="fsep"></div>
+  <button class="fbtn" onclick="resetFilters()">↻ Resetear</button>
+  <span class="finfo" id="fInfo"></span>
+</div>
+
+<div class="ct">
+
+  <!-- ========== 1. GENERAL VIEW ========== -->
+  <div id="s0" class="sec active">
+    <div class="kg">
+      <div class="kpi" style="border-top-color:#164EC7"><div class="v" id="k-total">—</div><div class="l">Monto Total (moneda emisión)</div></div>
+      <div class="kpi" style="border-top-color:#DB2B8D"><div class="v" id="k-emisiones">—</div><div class="l"># Emisiones</div></div>
+      <div class="kpi" style="border-top-color:#6D30A9"><div class="v" id="k-emisores">—</div><div class="l"># Emisores</div></div>
+      <div class="kpi" style="border-top-color:#D97706"><div class="v" id="k-tna">—</div><div class="l">TNA Promedio</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><h3>Evolución mensual de montos colocados</h3><span class="card-sub">Montos en moneda de emisión</span></div>
+      <div id="chart-mensual" class="cc"></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hdr"><h3>Top 10 Emisores</h3><span class="card-sub">Montos en moneda de emisión</span></div>
+        <div id="chart-emisores" class="cc"></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>Distribución por Legislación</h3><span class="card-sub">% sobre monto total</span></div>
+        <div id="chart-legislacion" class="cc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 2. DETALLE DE EMISIONES ========== -->
+  <div id="s1" class="sec">
+    <div class="card">
+      <div class="card-hdr"><h3 id="detalle-h3">Emisiones</h3><span class="card-sub" id="detalle-info">Mostrando todas las emisiones del período seleccionado.</span></div>
+      <div class="tbl-wrap" id="tabla-detalle"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>one618 · Informe Mercado Primario · {{ fecha_generacion }}</footer>
+
+<script>
+// ============================================================
+// DATOS INYECTADOS DESDE EL CONTEXTO JINJA
+// ============================================================
+const DATASET   = {{ dataset_json | safe }};
+const F_YEARS   = {{ f_years_json | safe }};
+const F_EMISORES = {{ f_emisores_json | safe }};
+const F_MONEDAS = {{ f_monedas_json | safe }};
+const F_LEGISLACIONES = {{ f_legislaciones_json | safe }};
+const F_MONEDAS_PAGO  = {{ f_monedas_pago_json | safe }};
+const F_ESTADOS = {{ f_estados_json | safe }};
+const TABLA_COLUMNAS = {{ tabla_columnas_json | safe }};
+const TABLA_FILAS    = {{ tabla_filas_json | safe }};
+
+// ============================================================
+// HELPERS DE FORMATO
+// ============================================================
+// Unidades (convención ES): K=miles(1e3), M=millones(1e6), B=billones(1e12), T=trillones(1e18). Nunca G.
+const _esAR2 = (n) => n.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const _esAR0 = (n) => Math.round(n).toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+function fmtMoney(v){
+  if(v == null || isNaN(v)) return '—';
+  const abs = Math.abs(v);
+  if(abs >= 1e18) return '$' + _esAR2(v/1e18) + 'T';
+  if(abs >= 1e12) return '$' + _esAR2(v/1e12) + 'B';
+  if(abs >= 1e6)  return '$' + _esAR2(v/1e6)  + 'M';
+  if(abs >= 1e3)  return '$' + _esAR2(v/1e3)  + 'K';
+  return '$' + Math.round(v).toLocaleString('es-AR');
+}
+function fmtMoney0(v){
+  // Como fmtMoney pero sin decimales en el sufijo.
+  if(v == null || isNaN(v)) return '—';
+  const abs = Math.abs(v);
+  if(abs >= 1e18) return '$' + _esAR0(v/1e18) + 'T';
+  if(abs >= 1e12) return '$' + _esAR0(v/1e12) + 'B';
+  if(abs >= 1e6)  return '$' + _esAR0(v/1e6)  + 'M';
+  if(abs >= 1e3)  return '$' + _esAR0(v/1e3)  + 'K';
+  return '$' + Math.round(v).toLocaleString('es-AR');
+}
+function fmtNum(v, dec){
+  if(v == null || isNaN(v)) return '—';
+  return Number(v).toLocaleString('es-AR', {minimumFractionDigits: dec||0, maximumFractionDigits: dec||0});
+}
+function fmtPct(v, dec){
+  if(v == null || isNaN(v)) return '—';
+  return Number(v).toFixed(dec||2) + '%';
+}
+function fmtCompact(v){
+  // Compacto con 2 decimales (K/M/B/T). Vacío para 0.
+  if(v == null || isNaN(v) || v === 0) return '';
+  const abs = Math.abs(v);
+  if(abs >= 1e18) return _esAR2(v/1e18) + 'T';
+  if(abs >= 1e12) return _esAR2(v/1e12) + 'B';
+  if(abs >= 1e6)  return _esAR2(v/1e6)  + 'M';
+  if(abs >= 1e3)  return _esAR2(v/1e3)  + 'K';
+  return Math.round(v).toLocaleString('es-AR');
+}
+function fmtCompact0(v){
+  // Igual que fmtCompact pero SIN decimales (K/M/B/T). Vacío para 0.
+  if(v == null || isNaN(v) || v === 0) return '';
+  const abs = Math.abs(v);
+  if(abs >= 1e18) return _esAR0(v/1e18) + 'T';
+  if(abs >= 1e12) return _esAR0(v/1e12) + 'B';
+  if(abs >= 1e6)  return _esAR0(v/1e6)  + 'M';
+  if(abs >= 1e3)  return _esAR0(v/1e3)  + 'K';
+  return Math.round(v).toLocaleString('es-AR');
+}
+
+// ============================================================
+// COMPONENTE MULTI-SELECT
+// ============================================================
+function initMsel(id, items, onChange, defaultSelected, searchable){
+  const wrap = document.getElementById(id);
+  const btn = wrap.querySelector('.msel-btn');
+  const dd  = wrap.querySelector('.msel-dd');
+
+  // Si no hay defaults, todos seleccionados; si hay, solo esos
+  const defaultSet = defaultSelected != null
+    ? new Set(defaultSelected.map(String))
+    : null;
+  const isDefault = (val) => defaultSet === null ? true : defaultSet.has(String(val));
+
+  const html = [];
+  if(searchable){
+    html.push('<div class="msel-search"><input type="text" placeholder="Escribí para buscar…" autocomplete="off"></div>');
+  }
+  html.push('<label class="msel-all"><input type="checkbox" data-all><span>Todos</span></label>');
+  items.forEach(it => {
+    const checked = isDefault(it.value) ? ' checked' : '';
+    html.push('<label><input type="checkbox" value="'+ String(it.value).replace(/"/g,'&quot;') +'"'+ checked +'><span>'+ String(it.label).replace(/</g,'&lt;') +'</span></label>');
+  });
+  dd.innerHTML = html.join('');
+
+  const allCb = dd.querySelector('[data-all]');
+  const cbs = [...dd.querySelectorAll('input:not([data-all])')];
+
+  function updateLabel(){
+    const checked = cbs.filter(c => c.checked);
+    if(checked.length === cbs.length) btn.textContent = 'Todos';
+    else if(checked.length === 0) btn.textContent = 'Ninguno';
+    else if(checked.length === 1) btn.textContent = checked[0].nextElementSibling.textContent;
+    else btn.textContent = checked.length + ' seleccionados';
+    allCb.checked = (checked.length === cbs.length);
+    allCb.indeterminate = (checked.length > 0 && checked.length < cbs.length);
+  }
+
+  allCb.addEventListener('change', () => {
+    cbs.forEach(c => c.checked = allCb.checked);
+    updateLabel();
+    onChange();
+  });
+  cbs.forEach(c => c.addEventListener('change', () => { updateLabel(); onChange(); }));
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    document.querySelectorAll('.msel.open').forEach(m => { if(m !== wrap) m.classList.remove('open'); });
+    wrap.classList.toggle('open');
+  });
+
+  wrap._getSelected = () => cbs.filter(c => c.checked).map(c => c.value);
+  wrap._reset = () => { cbs.forEach(c => { c.checked = isDefault(c.value); }); updateLabel(); };
+
+  // Búsqueda incremental: filtra las opciones visibles según lo tipeado
+  if(searchable){
+    const search = dd.querySelector('.msel-search input');
+    search.addEventListener('click', e => e.stopPropagation());
+    search.addEventListener('keydown', e => e.stopPropagation());
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase().trim();
+      cbs.forEach(c => {
+        const txt = c.nextElementSibling.textContent.toLowerCase();
+        c.parentElement.style.display = (!q || txt.includes(q)) ? '' : 'none';
+      });
+    });
+    // Al abrir el dropdown, enfocar el buscador
+    btn.addEventListener('click', () => {
+      if(wrap.classList.contains('open')) setTimeout(() => search.focus(), 0);
+    });
+  }
+
+  updateLabel();
+}
+
+document.addEventListener('click', (e) => {
+  // Cerrar dropdowns solo si el click es AFUERA de .msel
+  const clickedMsel = e.target.closest('.msel');
+  document.querySelectorAll('.msel.open').forEach(m => {
+    if(m !== clickedMsel) m.classList.remove('open');
+  });
+});
+
+// ============================================================
+// TABS
+// ============================================================
+function show(id, btn){
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  // Forzar resize de Plotly al cambiar tab para layout correcto
+  setTimeout(() => {
+    document.querySelectorAll('#'+id+' .cc').forEach(el => {
+      if(el._fullLayout) Plotly.Plots.resize(el);
+    });
+  }, 50);
+}
+
+// ============================================================
+// FILTRO EMISOR — autocompletado de texto
+// ============================================================
+let emisorQuery = '';  // texto actual del filtro de emisor
+
+function initEmisorAC(){
+  const wrap = document.getElementById('emisorAC');
+  const input = document.getElementById('emisorInput');
+  const list = document.getElementById('emisorList');
+
+  function renderList(){
+    const q = input.value.trim().toLowerCase();
+    let matches;
+    if(!q){
+      matches = F_EMISORES.slice(0, 60);
+    } else {
+      matches = F_EMISORES.filter(e => e.toLowerCase().includes(q));
+      // Priorizar los que empiezan con lo tipeado
+      matches.sort((a, b) => {
+        const pa = a.toLowerCase().startsWith(q) ? 0 : 1;
+        const pb = b.toLowerCase().startsWith(q) ? 0 : 1;
+        return pa - pb || a.localeCompare(b, 'es');
+      });
+      matches = matches.slice(0, 60);
+    }
+    if(matches.length === 0){
+      list.innerHTML = '<div class="empty">Sin coincidencias</div>';
+    } else {
+      list.innerHTML = matches.map(e =>
+        '<div class="item" data-val="' + e.replace(/"/g, '&quot;') + '">' + e.replace(/</g, '&lt;') + '</div>'
+      ).join('');
+    }
+  }
+
+  input.addEventListener('focus', () => { renderList(); wrap.classList.add('open'); });
+  input.addEventListener('input', () => {
+    emisorQuery = input.value.trim();
+    wrap.classList.add('open');
+    renderList();
+    rebuildAll();
+  });
+  list.addEventListener('click', e => {
+    const item = e.target.closest('.item');
+    if(!item) return;
+    input.value = item.dataset.val;
+    emisorQuery = item.dataset.val;
+    wrap.classList.remove('open');
+    rebuildAll();
+  });
+  // Cerrar la lista al hacer click fuera del componente
+  document.addEventListener('click', e => {
+    if(!wrap.contains(e.target)) wrap.classList.remove('open');
+  });
+
+  wrap._reset = () => { input.value = ''; emisorQuery = ''; };
+}
+
+// ============================================================
+// COMPONENTE SINGLE-SELECT (nativo)
+// ============================================================
+const ALL_VALUE = '__ALL__';
+
+function initSelect(id, values, onChange, opts){
+  opts = opts || {};
+  const sel = document.getElementById(id);
+  let html = '';
+  if(opts.includeAll) html += '<option value="' + ALL_VALUE + '">Todos</option>';
+  values.forEach(v => {
+    const s = String(v);
+    html += '<option value="' + s.replace(/"/g, '&quot;') + '">' + s.replace(/</g, '&lt;') + '</option>';
+  });
+  sel.innerHTML = html;
+
+  const applyDefault = () => {
+    const def = opts.default;
+    if(def != null && [...sel.options].some(o => o.value === String(def))) sel.value = String(def);
+    else if(opts.includeAll) sel.value = ALL_VALUE;
+    else if(sel.options.length) sel.selectedIndex = 0;
+  };
+  applyDefault();
+  sel.addEventListener('change', onChange);
+  sel._reset = applyDefault;
+}
+
+// ============================================================
+// FILTRADO
+// ============================================================
+function getFilteredData(){
+  const yearsSel  = document.getElementById('mselYear')._getSelected().map(Number);
+  const emQ = emisorQuery.toLowerCase();
+  const monedaVal = document.getElementById('selMoneda').value;
+  const legVal = document.getElementById('selLegislacion').value;
+  const mpagoVal = document.getElementById('selMonedaPago').value;
+  const estadoVal = document.getElementById('selEstado').value;
+  return DATASET.filter(d =>
+    yearsSel.includes(d.year) &&
+    (emQ === '' || (d.emisor && d.emisor.toLowerCase().includes(emQ))) &&
+    d.moneda === monedaVal &&
+    (legVal === ALL_VALUE || d.legislacion === legVal) &&
+    (mpagoVal === ALL_VALUE || d.moneda_pago === mpagoVal) &&
+    (estadoVal === ALL_VALUE || d.estado === estadoVal)
+  );
+}
+
+function resetFilters(){
+  document.getElementById('mselYear')._reset();
+  document.getElementById('emisorAC')._reset();
+  document.getElementById('selMoneda')._reset();
+  document.getElementById('selLegislacion')._reset();
+  document.getElementById('selMonedaPago')._reset();
+  document.getElementById('selEstado')._reset();
+  rebuildAll();
+}
+
+function updateFilterInfo(rows){
+  document.getElementById('fInfo').textContent = rows.length.toLocaleString('es-AR') + ' emisiones';
+}
+
+// ============================================================
+// LAYOUTS COMUNES PLOTLY
+// ============================================================
+const PLOTLY_CONFIG = { displayModeBar: false, responsive: true };
+const CHART_FONT = "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const LAYOUT_BASE = {
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor:  'rgba(0,0,0,0)',
+  font: { family: CHART_FONT, color: '#374151', size: 12 },
+  margin: { l: 60, r: 20, t: 20, b: 60 },
+  xaxis: { showgrid: false, zeroline: false, linecolor: '#e5e7eb', tickcolor: '#e5e7eb' },
+  yaxis: { showgrid: true, gridcolor: '#eef2f7', zeroline: false },
+  legend: { orientation: 'h', y: -0.2, font: { size: 11 } },
+  hovermode: false
+};
+
+// Paleta tomada del informe de referencia (Downloads/index.html): azul, magenta, violeta, naranja, verde, navy, rojo, gris
+const PALETTE = ['#164EC7','#DB2B8D','#6D30A9','#D97706','#059669','#00009D','#DC2626','#97989D'];
+
+// Convierte el texto SI de un tick (k/M/G/T/P de d3) a un número
+function siToNum(s){
+  const t = String(s).replace(/\s/g, '').replace(/−/g, '-');
+  const m = t.match(/^(-?[\d.,]+)([kMGTP])?$/);
+  if(!m) return null;
+  const mult = { k: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15 }[m[2]] || 1;
+  const n = parseFloat(m[1].replace(/,/g, ''));
+  return isNaN(n) ? null : n * mult;
+}
+// Reescribe los ticks numéricos de un gráfico con la convención ES (K/M/B/T, nunca G)
+// El regex de guard evita re-parsear nuestro propio output (p.ej. "1.000M" → skip)
+const _fixedTickRe = /^-?\d[\d.]*[KMBT]$/;
+function fixTicks(el){
+  el.querySelectorAll('.ytick text, .xtick text').forEach(t => {
+    const raw = t.textContent;
+    if(_fixedTickRe.test(raw)) return;  // ya está en nuestro formato, no re-parsear
+    const n = siToNum(raw);
+    if(n == null) return;
+    if(n === 0) t.textContent = '0';
+    else if(Math.abs(n) >= 1000) t.textContent = fmtCompact0(n);
+  });
+}
+
+// ============================================================
+// SOLAPA 1: GENERAL VIEW
+// ============================================================
+function buildGV(rows){
+  // KPIs
+  const totalNominal = rows.reduce((s, r) => s + (r.monto_nominal || 0), 0);
+  const nEmisiones = rows.length;
+  const nEmisores = new Set(rows.map(r => r.emisor).filter(Boolean)).size;
+  const tnaVals = rows.map(r => r.tna).filter(v => v != null);
+  const tnaAvg = tnaVals.length ? tnaVals.reduce((a,b) => a+b, 0) / tnaVals.length : null;
+
+  document.getElementById('k-total').textContent = fmtMoney0(totalNominal);
+  document.getElementById('k-emisiones').textContent = fmtNum(nEmisiones);
+  document.getElementById('k-emisores').textContent = fmtNum(nEmisores);
+  // TNA viene como fracción decimal (0.07 = 7%) → multiplicar por 100
+  document.getElementById('k-tna').textContent = tnaAvg != null ? fmtPct(tnaAvg * 100, 2) : '—';
+
+  // ---------------------------------------------------------
+  // Evolución mensual: barras apiladas, una serie por AÑO de emisión
+  // Eje X: meses (Enero..Diciembre); fecha = "Fecha de Emisión y Liquidación"
+  // Monto = nominal en moneda de emisión. Al seleccionar varios años, cada
+  // mes apila el aporte de cada año con un color distinto.
+  // ---------------------------------------------------------
+  const monthLabels = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  // Apilar por año de emisión: {mes: {año: monto}}
+  const byMonthYear = {};
+  const yearsSet = new Set();
+  const monthsSet = new Set();
+  rows.forEach(r => {
+    if(r.month_emis == null) return;
+    const yr = r.year_emis != null ? r.year_emis : (r.year != null ? r.year : 's/d');
+    yearsSet.add(yr);
+    monthsSet.add(r.month_emis);
+    byMonthYear[r.month_emis] = byMonthYear[r.month_emis] || {};
+    byMonthYear[r.month_emis][yr] = (byMonthYear[r.month_emis][yr] || 0) + (r.monto_nominal || 0);
+  });
+  // Mostrar sólo los meses que tienen datos en la selección actual
+  const monthsArr = [...monthsSet].sort((a, b) => a - b);
+  const monthLabelsShown = monthsArr.map(m => monthLabels[m - 1]);
+  const yearsArr = [...yearsSet].sort((a, b) => (a === 's/d') - (b === 's/d') || a - b);
+
+  // Determinar escala del eje Y (misma lógica que fmtCompact0) basada en el total apilado más alto
+  const maxStacked = monthsArr.length
+    ? Math.max(...monthsArr.map(m => yearsArr.reduce((s, yr) => s + ((byMonthYear[m] && byMonthYear[m][yr]) || 0), 0)))
+    : 0;
+  const barScale = maxStacked >= 1e18 ? 1e18 : maxStacked >= 1e12 ? 1e12 : maxStacked >= 1e6 ? 1e6 : maxStacked >= 1e3 ? 1e3 : 1;
+  const fmtBarLbl = v => (v == null || isNaN(v) || v === 0) ? '' : _esAR0(v / barScale);
+
+  const multiYear = yearsArr.length > 1;
+  const mensTraces = yearsArr.map((yr, idx) => {
+    const yvals = monthsArr.map(m => (byMonthYear[m] && byMonthYear[m][yr]) || 0);
+    return {
+      x: monthLabelsShown,
+      y: yvals,
+      type: 'bar',
+      name: String(yr),
+      marker: { color: PALETTE[idx % PALETTE.length], cornerradius: 5 },
+      // Desglose por segmento sólo si hay más de un año; si no, sólo el total arriba
+      text: yvals.map(v => multiYear ? fmtBarLbl(v) : ''),
+      textposition: 'inside',
+      insidetextanchor: 'middle',
+      textfont: { size: 11, color: '#fff' },
+      constraintext: 'none',
+      cliponaxis: false,
+      hoverinfo: 'skip'
+    };
+  });
+
+  // Total por mes (suma de los años apilados) → etiqueta arriba de cada columna
+  const mensTotals = monthsArr.map(m => yearsArr.reduce((s, yr) => s + ((byMonthYear[m] && byMonthYear[m][yr]) || 0), 0));
+  const mensAnnotations = monthLabelsShown.map((lbl, i) => ({
+    x: lbl, y: mensTotals[i], xref: 'x', yref: 'y',
+    text: fmtBarLbl(mensTotals[i]),
+    showarrow: false, yanchor: 'bottom', yshift: 4,
+    font: { size: 12, color: '#23252b', family: CHART_FONT }
+  })).filter(a => a.text !== '');
+
+  const mensualEl = document.getElementById('chart-mensual');
+  Plotly.newPlot('chart-mensual', mensTraces, {
+    ...LAYOUT_BASE,
+    barmode: 'stack',
+    hovermode: false,
+    margin: { l: 60, r: 20, t: 40, b: 90 },
+    bargap: 0.3,
+    annotations: mensAnnotations,
+    xaxis: { ...LAYOUT_BASE.xaxis, type: 'category', tickangle: -45, automargin: true },
+    yaxis: { ...LAYOUT_BASE.yaxis, showgrid: false, tickformat: ',.2s', range: maxStacked > 0 ? [0, maxStacked * 1.15] : undefined }
+  }, PLOTLY_CONFIG).then(() => fixTicks(mensualEl));
+  mensualEl.on('plotly_afterplot', () => fixTicks(mensualEl));
+
+  // ---------------------------------------------------------
+  // Top 10 Emisores — Monto nominal en moneda de emisión
+  // Truncar nombres largos para que entren en el cuadrante
+  // ---------------------------------------------------------
+  const emisorMap = {};
+  rows.forEach(r => {
+    if(!r.emisor) return;
+    emisorMap[r.emisor] = (emisorMap[r.emisor] || 0) + (r.monto_nominal || 0);
+  });
+  const topEm = Object.entries(emisorMap).sort((a,b) => b[1] - a[1]).slice(0, 10);
+  const truncEm = (s, n) => s.length > n ? s.slice(0, n-1) + '…' : s;
+  const EM_TRUNC = 38;
+  const emisEl = document.getElementById('chart-emisores');
+  Plotly.newPlot('chart-emisores', [{
+    x: topEm.map(e => e[1]),
+    y: topEm.map(e => truncEm(e[0], EM_TRUNC)),
+    type: 'bar',
+    orientation: 'h',
+    marker: { color: topEm.map((_, i) => PALETTE[i % PALETTE.length]), cornerradius: 4 },
+    text: topEm.map(e => fmtCompact0(e[1])),
+    textposition: 'outside',
+    textfont: { size: 11 },
+    constraintext: 'none',
+    cliponaxis: false,
+    hoverinfo: 'skip'
+  }], {
+    ...LAYOUT_BASE,
+    margin: { l: 250, r: 60, t: 20, b: 20 },
+    height: 360,
+    bargap: 0.45,
+    xaxis: { visible: false, showgrid: false, zeroline: false },
+    yaxis: { ...LAYOUT_BASE.yaxis, showgrid: false, autorange: 'reversed', tickfont: { size: 11 }, automargin: true, ticklabelstandoff: 12 }
+  }, PLOTLY_CONFIG);
+
+  // ---------------------------------------------------------
+  // Helper para donut compacto y legible
+  // ---------------------------------------------------------
+  function buildDonut(divId, dataMap, paletteOffset){
+    const off = paletteOffset || 0;
+    const keys = Object.keys(dataMap);
+    const sliceColors = keys.map((_, i) => PALETTE[(i + off) % PALETTE.length]);
+    Plotly.newPlot(divId, [{
+      labels: keys,
+      values: keys.map(k => dataMap[k]),
+      type: 'pie',
+      hole: 0.55,
+      sort: true,
+      direction: 'clockwise',
+      marker: { colors: sliceColors, line: { color: '#fff', width: 2 } },
+      textinfo: 'percent',
+      textposition: 'inside',
+      insidetextorientation: 'horizontal',
+      textfont: { size: 11, color: '#fff' },
+      hoverinfo: 'skip'
+    }], {
+      ...LAYOUT_BASE,
+      margin: { l: 10, r: 10, t: 10, b: 10 },
+      height: 360,
+      showlegend: true,
+      legend: {
+        orientation: 'v',
+        x: 1,
+        y: 0.5,
+        xanchor: 'left',
+        yanchor: 'middle',
+        font: { size: 11 },
+        itemwidth: 30
+      }
+    }, PLOTLY_CONFIG);
+  }
+
+  // ---------------------------------------------------------
+  // Distribución por Legislación — Monto nominal en moneda de emisión
+  // ---------------------------------------------------------
+  const legMap = {};
+  rows.forEach(r => {
+    const k = r.legislacion || '(sin)';
+    legMap[k] = (legMap[k] || 0) + (r.monto_nominal || 0);
+  });
+  buildDonut('chart-legislacion', legMap, 0);  // paleta desde el azul primario
+}
+
+// ============================================================
+// SOLAPA 2: DETALLE DE EMISIONES (tabla completa)
+// ============================================================
+const DETALLE_LIMIT = 1000;  // máximo de filas a renderizar para evitar lentitud
+let sortState = { colIdx: -1, dir: 'asc' };  // estado de ordenamiento actual
+
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sortRows(rows, colIdx, direction, colTypes){
+  if(colIdx < 0 || colIdx >= colTypes.length) return rows;
+
+  const sorted = [...rows];
+  sorted.sort((r1, r2) => {
+    const v1 = TABLA_FILAS[r1.idx] ? TABLA_FILAS[r1.idx][colIdx] : '';
+    const v2 = TABLA_FILAS[r2.idx] ? TABLA_FILAS[r2.idx][colIdx] : '';
+
+    // Intentar comparar como números si ambos son numéricos
+    const n1 = Number(v1);
+    const n2 = Number(v2);
+    let cmp;
+    if(!isNaN(n1) && !isNaN(n2)){
+      cmp = n1 - n2;
+    } else {
+      // Comparar como strings
+      const s1 = String(v1).toLowerCase();
+      const s2 = String(v2).toLowerCase();
+      cmp = s1.localeCompare(s2, 'es');
+    }
+    return direction === 'desc' ? -cmp : cmp;
+  });
+  return sorted;
+}
+
+function fmtCellGeneric(v){
+  if(v == null || v === '') return '';
+  if(typeof v === 'number'){
+    if(Math.abs(v) >= 1000) return Number(v).toLocaleString('es-AR', {maximumFractionDigits: 2});
+    return Number(v).toLocaleString('es-AR', {maximumFractionDigits: 4});
+  }
+  return escapeHtml(v);
+}
+
+// Decidir tipo de formato y visibilidad por nombre de columna
+function getColType(colName, hiddenCols){
+  const c = String(colName).toLowerCase().replace(/\s+/g, ' ').trim();
+  if(c.startsWith('unnamed')) return 'hidden';
+  if(c === 'fecha colocación' || c === 'fecha colocacion') return 'hidden';
+  if(c === 'plazo (meses)') return 'hidden';
+  if(c === 'ofertado') return 'hidden';
+  if(c === 'demanda') return 'hidden';
+  if(c === 'fecha filtro') return 'hidden';
+  if(c === 'tpcg') return 'hidden';
+  if(c === 'monto en usd equivalentes') return 'hidden';
+  if(c === 'monto en $ equivalentes') return 'hidden';
+  if(c === 'estado (tpcg)') return 'hidden';
+  if(c === 'estado (one618)') return 'hidden';
+  if(c === 'tipo') return 'hidden';
+  if(c === 'estado') return 'hidden';
+  if(c === 'ticker') return 'hidden';
+  if(c === 'precio de corte') return 'hidden';
+  if(c === 'comentario') return 'hidden';
+  if(hiddenCols && hiddenCols.has(c)) return 'hidden';
+
+  if(c.includes('emisi') && c.includes('liquidaci')) return 'date_ddmmyy';
+  if(c === 'vencimiento') return 'date_ddmmyyyy';
+  if(c.includes('precio de corte')) return 'pct';
+  if(c.includes('tna') && c.includes('inicial')) return 'pct';
+  if(c.includes('tir') && c.includes('inicial')) return 'hidden';
+  if(c.includes('spread')) return 'pct';
+  if(c === 'plazo') return 'int';
+  return 'default';
+}
+
+function fmtCellTyped(val, type){
+  if(val == null || val === '') return '';
+  switch(type){
+    case 'date_ddmmyy': {
+      const m = String(val).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(m) return m[3] + '/' + m[2] + '/' + m[1].slice(2);
+      return escapeHtml(val);
+    }
+    case 'date_ddmmyyyy': {
+      const m = String(val).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(m) return m[3] + '/' + m[2] + '/' + m[1];
+      return escapeHtml(val);
+    }
+    case 'pct': {
+      const n = Number(val);
+      if(isNaN(n)) return '';
+      return (n * 100).toFixed(2) + '%';
+    }
+    case 'money_int':
+    case 'int': {
+      const n = Number(val);
+      if(isNaN(n)) return '';
+      return n.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+    }
+    default:
+      return fmtCellGeneric(val);
+  }
+}
+
+function buildDetalle(rows){
+  const total = rows.length;
+
+  // Spread Tamar sólo tiene sentido en emisiones en $; ocultarla si no se filtró por esa moneda
+  const hiddenCols = new Set();
+  const monedaVal = document.getElementById('selMoneda').value;
+  if(monedaVal !== '$') hiddenCols.add('spread tamar');
+
+  // Pre-computar tipos por columna y filtrar índices visibles
+  const colTypes = TABLA_COLUMNAS.map(c => getColType(c, hiddenCols));
+  let visibleIdx = colTypes.map((t, i) => t === 'hidden' ? -1 : i).filter(i => i >= 0);
+
+  // Mover columna "Estado" al final
+  const estadoIdx = visibleIdx.findIndex(i => TABLA_COLUMNAS[i].toLowerCase().includes('estado'));
+  if(estadoIdx >= 0 && estadoIdx < visibleIdx.length - 1){
+    const estadoCol = visibleIdx.splice(estadoIdx, 1)[0];
+    visibleIdx.push(estadoCol);
+  }
+
+  // Aplicar ordenamiento si está activo
+  let sortedRows = rows;
+  if(sortState.colIdx >= 0 && visibleIdx.includes(sortState.colIdx)){
+    sortedRows = sortRows(rows, sortState.colIdx, sortState.dir, colTypes);
+  }
+  const slice = sortedRows.slice(0, DETALLE_LIMIT);
+
+  // Header con click handlers y flechitas
+  let html = '<table><thead><tr>';
+  visibleIdx.forEach((i, visIdx) => {
+    const colName = escapeHtml(TABLA_COLUMNAS[i]);
+    const arrow = (sortState.colIdx === i) ? (sortState.dir === 'asc' ? ' ↑' : ' ↓') : '';
+    html += '<th style="cursor:pointer;user-select:none;" onclick="toggleSort(' + i + ',' + visIdx + ')">' + colName + arrow + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  // Body
+  slice.forEach(r => {
+    const fila = TABLA_FILAS[r.idx];
+    if(!fila) return;
+    html += '<tr>';
+    visibleIdx.forEach(i => {
+      html += '<td>' + fmtCellTyped(fila[i], colTypes[i]) + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  document.getElementById('tabla-detalle').innerHTML = html;
+  document.getElementById('detalle-h3').textContent = 'Emisiones (' + fmtNum(total) + ')';
+
+  const info = document.getElementById('detalle-info');
+  if(total > DETALLE_LIMIT){
+    info.textContent = 'Mostrando las primeras ' + fmtNum(DETALLE_LIMIT) + ' de ' + fmtNum(total) + ' emisiones. Aplicá filtros para reducir la cantidad.';
+  } else {
+    info.textContent = 'Fuente: one618 a partir de CNV.';
+  }
+}
+
+function toggleSort(colIdx){
+  // Si ya está ordenado por esta columna, cambiar dirección
+  if(sortState.colIdx === colIdx){
+    sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortState.colIdx = colIdx;
+    sortState.dir = 'asc';
+  }
+  // Re-renderizar tabla
+  const rows = getFilteredData();
+  buildDetalle(rows);
+}
+
+// ============================================================
+// REBUILD ALL
+// ============================================================
+function rebuildAll(){
+  const rows = getFilteredData();
+  updateFilterInfo(rows);
+  buildGV(rows);
+  buildDetalle(rows);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // Orden por defecto: Fecha de Emisión y Liquidación, más recientes arriba
+  const fechaEmisCol = TABLA_COLUMNAS.findIndex(c => {
+    const s = String(c).toLowerCase();
+    return s.includes('emisi') && s.includes('liquidaci');
+  });
+  if(fechaEmisCol >= 0) sortState = { colIdx: fechaEmisCol, dir: 'desc' };
+
+  const lastYear = F_YEARS.length ? F_YEARS[0] : null;
+  initMsel('mselYear', F_YEARS.map(y => ({ value: y, label: String(y) })), rebuildAll, lastYear != null ? [lastYear] : null);
+  initSelect('selMoneda', F_MONEDAS, rebuildAll, { default: F_MONEDAS.includes('USD') ? 'USD' : null });
+  initEmisorAC();
+  initSelect('selLegislacion', F_LEGISLACIONES, rebuildAll, { includeAll: true });
+  initSelect('selMonedaPago', F_MONEDAS_PAGO, rebuildAll, { includeAll: true });
+  initSelect('selEstado', F_ESTADOS, rebuildAll, { includeAll: true, default: F_ESTADOS.includes('Vigente') ? 'Vigente' : null });
+  rebuildAll();
+});
+</script>
+
+</body>
+</html>

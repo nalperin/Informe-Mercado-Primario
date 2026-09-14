@@ -1,0 +1,24 @@
+﻿# Datos sensibles — Excel con información financiera
+Input/
+
+# Archivos generados (el informe para compartir va en docs/)
+Output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporales
+temp_read.py
+
+# Logs
+*.log
+
+# Claude Code config local
+.claude/
+
+# OS
+Thumbs.db
+.DS_Store
+~$*.xlsx
